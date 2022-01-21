@@ -2,7 +2,8 @@
 #       e.g. use the -t option to sort by time modified in Downloads
 # look into CLICOLOR anc LC_COLLATE=C
 function ll -d "Lists the contents of a directory with the prefered flags"
-  command ls -AlFhOG $argv
+  # command ls -AlFhOG $argv
+  gls --color -AlhF --group-directories-first $argv
 end
 
 # overwrite python to target python3
@@ -30,12 +31,8 @@ end
 # Aliases for quickly accessing and sourcing these files
 function source_profile -d "Sources the config.fish file"
   set -l CUR_DIR (pwd)
-  source ~/.config/fish/config.fish
+  source ~/.config/fish/conf.d/init.fish
   cd $CUR_DIR
-end
-
-function edit_profile -d "Opens the fish cofig files with atom"
-  code ~/.config/fish
 end
 
 
