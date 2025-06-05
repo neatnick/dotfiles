@@ -1,18 +1,24 @@
 function fish_prompt --description 'Write out the prompt'
   set laststatus $status
+
   function _git_branch_name
-    echo (git symbolic-ref HEAD ^/dev/null | sed -e 's|^refs/heads/||')
-  end
-  function _is_git_dirty
-    echo (git status -s --ignore-submodules=dirty ^/dev/null)
-  end
-  if [ (_git_branch_name) ]
-    if [ (_is_git_dirty) ]
-      set git_branch (set_color yellow)(_git_branch_name)
-    else
-      set git_branch (set_color green)(_git_branch_name)
+    if command git rev-parse --is-inside-work-tree >/dev/null 2>&1
+        git branch --show-current 2>/dev/null
     end
-    set git_info "(git:$git_branch"(set_color normal)")"
+  end
+
+  function _git_changes
+    echo (git status --porcelain)
+  end
+
+  set branch (_git_branch_name)
+  if test -n "$branch"
+    if test -n (_git_changes)
+        set git_branch (set_color yellow)$branch
+    else
+        set git_branch (set_color green)$branch
+    end
+    set git_info "($git_branch"(set_color normal)")"
   end
   # set_color -b transparent
   printf '%s%s%s%s%s%s%s%s%s%s%s%s%s'\
