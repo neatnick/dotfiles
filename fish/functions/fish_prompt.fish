@@ -8,15 +8,18 @@ function fish_prompt --description 'Write out the prompt'
   end
 
   function _git_changes
-    echo (git status --porcelain)
+    echo (git status --porcelain 2>/dev/null)
   end
 
   set branch (_git_branch_name)
   if test -n "$branch"
-    if test -n (_git_changes)
-        set git_branch (set_color yellow)$branch
+    git status >/dev/null 2>&1
+    if test $status -ne 0
+      set git_branch (set_color grey)$branch
+    else if test -n (_git_changes)
+      set git_branch (set_color yellow)$branch
     else
-        set git_branch (set_color green)$branch
+      set git_branch (set_color green)$branch
     end
     set git_info "($git_branch"(set_color normal)")"
   end
